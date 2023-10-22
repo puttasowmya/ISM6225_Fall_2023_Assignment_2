@@ -6,7 +6,11 @@ WRITE YOUR CODE IN THE RESPECTIVE QUESTION FUNCTION BLOCK
 
 */
 
+using System;
+using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace ISM6225_Fall_2023_Assignment_2
 {
@@ -112,9 +116,74 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<IList<int>>();
+                // Define a list to store the missing ranges
+                List<IList<int>> result = new List<IList<int>>();
+
+                // Variables to track the start and end of a missing range
+                int start;
+                int end;
+
+
+                // Check and add a range before the first element if needed
+
+                if (nums[0] > lower)
+                {
+
+                    start = lower;
+                    end = nums[0] - 1;
+
+                    // Ensure the range is valid (start should be less than or equal to end)
+
+                    if (start <= end)
+                    {
+                        result.Add(new List<int> { start, end });
+                       
+                    }
+                }
+
+                // Iterate through the elements in nums to find missing ranges
+
+
+                for (int i = 0; i < nums.Length - 1; i++)
+                {
+                    if (nums[i] >= lower && nums[i] <= upper)
+                    {
+                        start = nums[i];
+                        end = nums[i + 1];
+
+                        // Calculate the range between the current and next element
+                        start++; // Increment by 1 to exclude the current element
+                        end--;   // Decrement by 1 to exclude the next element
+
+                        // Ensure the range is valid (start should be less than or equal to end)
+                        if (start <= end)
+                        {
+                            result.Add(new List<int> { start, end });
+                            
+
+                        }
+
+                    }
+
+                }
+                // Check and add a range after the last element if needed
+                if (nums[nums.Length - 1] < upper)
+                {
+
+                    start = nums[nums.Length - 1] + 1;
+                    end = upper;
+
+                    // Ensure the range is valid (start should be less than or equal to end)
+                    if (start <= end)
+                    {
+                        result.Add(new List<int> { start, end });
+                    }
+                }
+
+                return result;
             }
+
+            
             catch (Exception)
             {
                 throw;
@@ -156,14 +225,47 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return s.Length == 0;
+            // Initialize a stack to keep track of open brackets
+            Stack<char> stack = new Stack<char>();
+             // Define a dictionary to map closing brackets to their corresponding open brackets
+             Dictionary<char, char> dd = new Dictionary<char, char>
+        {
+            {')', '('},
+            {'}', '{'},
+            {']', '['}
+        };
+                // Iterate through each character in the input string
+
+                foreach (char c in s)
+            {
+                // If the current character is an open bracket, push it to stack
+                if (dd.ContainsValue(c))
+                {
+                    stack.Push(c);
+                }
+                // If the current character is a closing bracket
+                else if (dd.ContainsKey(c))
+                {
+                    // Check if the stack is empty or the top of the stack does not match the expected open bracket
+                    if (stack.Count == 0 || stack.Pop() != dd[c])
+                    {
+                        return false; // Mismatched brackets, the string is invalid
+                        }
+                }
+                else
+                {
+                    return false; // Invalid character, not a bracket
+                    }
+            }
+            
+            // If the stack is empty, all brackets were properly matched and closed
+            return stack.Count == 0;
             }
             catch (Exception)
-            {
-                throw;
-            }
-        }
+                {
+                     throw;
+                }
+}
 
         /*
 
@@ -191,14 +293,35 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 1;
+                // Initialize variables for the maximum profit and minimum price
+                int maxProfit = 0;
+                int minPrice = int.MaxValue;
+
+                for (int i = 0; i < prices.Length; i++)
+                {
+                    // Update the minimum price if a lower price is found
+                    if (prices[i] < minPrice)
+                    {
+                        minPrice = prices[i];
+                    }
+                    // Calculate the profit if sold on the current day
+                    int Profit = prices[i] - minPrice;
+
+                    // Update the maximum profit if a higher profit is found
+                    if (Profit > maxProfit)
+                    {
+                        maxProfit = Profit;
+                    }
+                }
+
+                return maxProfit;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
         
@@ -229,14 +352,52 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return false;
+                // Define a dictionary to represent valid strobogrammatic pairs
+                Dictionary<char, char> Pairs = new Dictionary<char, char>
+        {
+            {'0', '0'},
+            {'1', '1'},
+            {'6', '9'},
+            {'8', '8'},
+            {'9', '6'}
+        };
+
+                // Initialize two pointers to the left and right ends of the string
+                int left = 0;
+                int right = s.Length - 1;
+
+                // Continue checking pairs until the left pointer crosses or meets the right pointer
+                while (left <= right)
+                {
+                    char leftChar = s[left];
+                    char rightChar = s[right];
+
+                    // If either character in the pair is not in the dictionary, it's not strobogrammatic
+                    if (!Pairs.ContainsKey(leftChar) || !Pairs.ContainsKey(rightChar))
+                    {
+                        return false;
+                    }
+
+                    // If the pair does not form a valid strobogrammatic pair, return false
+                    if (Pairs[leftChar] != rightChar)
+                    {
+                        return false;
+                    }
+
+                    // Move the pointers inward to check the next pair
+                    left++;
+                    right--;
+                }
+
+                // If the loop completes, the number is strobogrammatic
+                return true;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
 
@@ -271,14 +432,34 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                // Create a dictionary to store the frequency of each number
+                Dictionary<int, int> count = new Dictionary<int, int>();
+                int result = 0;
+
+                // Iterate through the array to count the frequency of each number
+                foreach (int i in nums)
+                {
+                    if (count.ContainsKey(i))
+                    {
+                        // Increment the count if the number is already in the dictionary
+                        result += count[i];
+                        count[i]++;
+                    }
+                    else
+                    {
+                        // Add the number to the dictionary with a frequency of 1
+                        count[i] = 1;
+                    }
+                }
+
+                return result;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
         Question 6
@@ -321,14 +502,38 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                // Create a HashSet to store distinct numbers
+                HashSet<int> hash = new HashSet<int>();
+
+                // Iterate through the array to find the third distinct maximum
+                foreach (int number in nums)
+                {
+                    // Add the current number to the HashSet
+                    hash.Add(number);
+
+                    // If there are more than three numbers in the HashSet, remove the minimum number
+                    if (hash.Count > 3)
+                    {
+                        hash.Remove(hash.Min());
+                    }
+                }
+
+                // Check if there are at least three distinct maximums
+                if (hash.Count >= 3)
+                {
+                    return hash.Min(); // Return the third distinct maximum
+                }
+                else
+                {
+                    return hash.Max(); // Return the maximum number if the third distinct maximum does not exist
+                }
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
         
@@ -354,14 +559,33 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<string>() { };
+                // Initialize a list to store possible next moves
+                List<string> list = new List<string>();
+                int n = currentState.Length; // length of the input string
+
+                // Iterate through the input string
+                for (int i = 0; i < n - 1; i++)
+                {
+                    // Check if the current character and the next character form a "++" sequence
+                    if (currentState[i] == '+' && currentState[i + 1] == '+')
+                    {
+                        // Create a new state by replacing "++" with "--"
+                        string nextState = currentState.Substring(0, i) + "--" + currentState.Substring(i + 2);
+
+                        // Add the new state to the list of possible moves
+                        list.Add(nextState);
+                    }
+                }
+
+                // Return the list of valid moves
+                return list;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
 
@@ -383,9 +607,25 @@ namespace ISM6225_Fall_2023_Assignment_2
 
         public static string RemoveVowels(string s)
         {
-            // Write your code here and you can modify the return value according to the requirements
-            return "";
+            // Initialize a StringBuilder to efficiently build the result string
+            StringBuilder result = new StringBuilder();
+
+            // Iterate through each character in the input string
+            foreach (char c in s)
+            {
+                // Check if the current character is not a vowel
+                if (c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u')
+                {
+                    // add the character to the result
+                    result.Append(c);
+                }
+            }
+
+            // Convert the result StringBuilder to a string and return it
+            return result.ToString();
         }
+
+
 
         /* Inbuilt Functions - Don't Change the below functions */
         static string ConvertIListToNestedList(IList<IList<int>> input)
